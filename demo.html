@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="Elevator.js"></script>
+</head>
+<body>
+
+<script>
+    var elevator = new Elevator(10);
+var UP = 1, DOWN = -1;
+
+    elevator.goTo(7);
+    elevator.requestStopAt({ floor: 2, direction: DOWN });
+    elevator.step(); // Go to floor 2
+    elevator.step(); // Go to floor 3
+
+    elevator.requestStopAt({ floor: 4, direction: UP });
+    elevator.requestStopAt({ floor: 5, direction: DOWN });
+    elevator.step(); // Go to floor 4
+    elevator.requestStopAt({ floor: 9, direction: UP });
+    elevator.step(); // Go to floor 5
+
+    elevator.step(); // Go to floor 6
+
+    elevator.step(); // Go to floor 7
+    elevator.step(); // Go to floor 8
+
+    elevator.step(); // Go to floor 9
+    elevator.step(); // Go to floor 10
+</script>
+
+</body>
+</html>
