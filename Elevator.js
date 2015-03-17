@@ -21,12 +21,10 @@
                 }
 
                 this.queue.push({ floor: floor });
-                //this.stops[floor - 1] = 1;
             },
 
             requestStopAt = function(requestObject) {
                 this.queue.push(requestObject);
-                // this.stops[requestObject.floor - 1] = ;
             },
 
             inQueue = function(floor, direction) {
