@@ -104,4 +104,21 @@ describe("Elevator",function() {
         expect(elevator.elevatorOpen).toBe(true);
         expect(elevator.currentFloor).toBe(9);
     });
+
+    it("should go to another floor if press on te middle of the move", function() {
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.goTo(7);
+        elevator.requestStopAt({floor: 2, direction: DOWN});
+        elevator.step(); // Go to floor 2
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.goTo(5);
+        elevator.step(); // Go to floor 3
+        elevator.requestStopAt({floor: 4, direction: UP});
+        elevator.requestStopAt({floor: 3, direction: DOWN});
+        elevator.step(); // Go to floor 4
+        expect(elevator.elevatorOpen).toBe(true);
+        elevator.requestStopAt({floor: 9, direction: UP});
+        elevator.step(); // Go to floor 5
+        expect(elevator.elevatorOpen).toBe(true);
+    });
 });

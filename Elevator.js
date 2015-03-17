@@ -31,7 +31,7 @@
 
             inQueue = function(floor, direction) {
                 var queueElement = this.queue.filter(function(requestObject) {
-                    return requestObject.floor === floor && requestObject.direction === direction;
+                    return requestObject.floor === floor && (requestObject.direction === direction || requestObject.direction === undefined);
                 });
                 return queueElement.length > 0;
             },
