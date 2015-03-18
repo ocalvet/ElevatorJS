@@ -80,27 +80,31 @@
         var building = document.getElementById("container");
         // Create floors
         for(var i = 0; i < FLOORS; i++) {
+            // Create floor div
             var childDiv = document.createElement("div");
+
             var upArrow = document.createElement("img");
             upArrow.src = "up.png";
             upArrow.classList.add("btn-img");
             upArrow.classList.add("up-img");
             upArrow.elevatorFloor = FLOORS - i;
             upArrow.addEventListener("click", function () {
-                var requestedStop = { floor: this.elevatorFloor, direction: 1};
-                console.log("requested stop", requestedStop, this);
-                elevator.requestStopAt(requestedStop);
+                gotoFloor = this.elevatorFloor;
+                console.log("requested stop", { floor: this.elevatorFloor, direction: 1}, this);
+                elevator.requestStopAt({ floor: this.elevatorFloor, direction: 1});
                 animate();
             });
             childDiv.appendChild(upArrow);
+
             var downArrow = document.createElement("img");
             downArrow.src = "down.png";
             downArrow.classList.add("btn-img");
             downArrow.classList.add("down-img");
-            upArrow.addEventListener("click", function () {
-                var requestedStop = { floor: this.elevatorFloor, direction: -1};
-                console.log("requested stop", requestedStop, this);
-                elevator.requestStopAt(requestedStop);
+            downArrow.elevatorFloor = FLOORS - i;
+            downArrow.addEventListener("click", function () {
+                gotoFloor = this.elevatorFloor;
+                console.log("requested stop", { floor: this.elevatorFloor, direction: -1}, this);
+                elevator.requestStopAt({ floor: this.elevatorFloor, direction: -1});
                 animate();
             });
             childDiv.appendChild(downArrow);
