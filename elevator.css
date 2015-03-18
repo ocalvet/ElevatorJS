@@ -1,0 +1,85 @@
+body {
+    margin:0;
+    padding: 0px;
+}
+
+#container {
+    width: 800px;
+    height: 620px;
+    margin: 0 auto;
+    background-color: #2e2e2e;
+    position: relative;
+    z-index: 700;
+}
+
+.floor {
+    position: absolute;
+    width: 100%;
+    background-color: cadetblue;
+    z-index: 800;
+    border: 1px solid #2e2e2e;
+}
+
+.btn-img {
+    width: 60px;
+    height: 60px;
+}
+
+img:hover {
+    cursor: pointer;
+}
+
+.up-img {
+    position: absolute;
+    top:0px;
+    left:0px;
+}
+
+.down-img {
+    position: absolute;
+    right:0px;
+    top:0px;
+}
+
+#controls {
+    position: fixed;
+    top: 100px;
+    left: 0px;
+    width: 100px;
+}
+
+#elevator-track {
+    position: relative;
+    width: 100px;
+    height: 600px;
+    top: 20px;
+    left: 350px;
+    background-color: #efefef;
+    z-index: 900;
+}
+
+#elevator {
+    position: absolute;
+    bottom: 0px;
+    left:0;
+    background-color: red;
+    width: 100px;
+    height: 60px;
+    z-index: 1000;
+}
+
+.menu {
+    padding: 0;
+    margin: 0;
+    width: 100px;
+    list-style-type: none;
+}
+
+.menu li {
+    cursor: pointer;
+    padding: 3px 10px;
+}
+
+.menu li:hover {
+    background-color: bisque;
+}

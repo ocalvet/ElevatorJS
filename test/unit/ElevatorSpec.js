@@ -120,5 +120,72 @@ describe("Elevator",function() {
         elevator.requestStopAt({floor: 9, direction: UP});
         elevator.step(); // Go to floor 5
         expect(elevator.elevatorOpen).toBe(true);
+        elevator.step(); // Go to floor 6
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.step(); // Go to floor 7
+        expect(elevator.elevatorOpen).toBe(true);
+    });
+
+    it("should stop after reaching destination", function() {
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.goTo(2);
+        elevator.step(); // Go to floor 2
+        expect(elevator.elevatorOpen).toBe(true);
+        elevator.step(); // Go to floor 3
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.step(); // Go to floor 4
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.step(); // Go to floor 5
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.step(); // Go to floor 6
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.step(); // Go to floor 7
+        expect(elevator.elevatorOpen).toBe(false);
+    });
+
+    it("should change direction if next floor on opposite direction", function() {
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.goTo(4);
+        elevator.step(); // Go to floor 2
+        elevator.step(); // Go to floor 3
+        elevator.step(); // Go to floor 4
+        expect(elevator.elevatorOpen).toBe(true);
+        elevator.goTo(2);
+        elevator.step(); // Go to floor 3
+        expect(elevator.direction).toBe(-1);
+        elevator.step(); // Go to floor 2
+        expect(elevator.elevatorOpen).toBe(true);
+    });
+
+    it("should stay on same floor if goto requested with current floor", function() {
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.goTo(1);
+        elevator.step(); // Stay in 1 but open door
+        expect(elevator.currentFloor).toBe(1);
+    });
+
+    it("should open door if goto 1st floor from 1st floor", function() {
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.goTo(1);
+        elevator.step(); // Stay in 1 but open door
+        expect(elevator.elevatorOpen).toBe(true);
+    });
+
+    it("should open door if goto current floor", function() {
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.goTo(2);
+        elevator.step(); // Goto 2
+        expect(elevator.elevatorOpen).toBe(true);
+        elevator.goTo(2);
+        elevator.step(); // Goto 2
+        expect(elevator.elevatorOpen).toBe(true);
+    });
+
+    it("should go to floor if requested and elevator not moving", function() {
+        expect(elevator.elevatorOpen).toBe(false);
+        elevator.requestStopAt(3);
+        elevator.step(); // Goto 2
+        elevator.step(); // Goto 3
+        expect(elevator.elevatorOpen).toBe(true);
     });
 });

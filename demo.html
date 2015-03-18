@@ -4,31 +4,129 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="Elevator.js"></script>
+    <link rel="stylesheet" href="elevator.css" />
 </head>
 <body>
 
-<script>
-    var elevator = new Elevator(10);
-var UP = 1, DOWN = -1;
+<div id="container">
+    <div id="elevator-track">
+        <div id="elevator">
+            <div id="elevator-door"></div>
+        </div>
+    </div>
+</div>
 
-    elevator.goTo(7);
-    elevator.requestStopAt({ floor: 2, direction: DOWN });
-    elevator.step(); // Go to floor 2
-    elevator.step(); // Go to floor 3
+<div id="controls">
+    <ul class="menu">
+        <li id="goto">GoTo</li>
+        <li id="stop">Stop</li>
+    </ul>
+    <p>Floor: <span id="current-floor"></span></p>
+    <p>Direction: <span id="direction"></span></p>
+</div>
 
-    elevator.requestStopAt({ floor: 4, direction: UP });
-    elevator.requestStopAt({ floor: 5, direction: DOWN });
-    elevator.step(); // Go to floor 4
-    elevator.requestStopAt({ floor: 9, direction: UP });
-    elevator.step(); // Go to floor 5
+<script type="text/javascript">
 
-    elevator.step(); // Go to floor 6
+    var FLOOR_HEIGHT = 60;
+    var REFRESH_RATE = 100;
+    var FLOORS = 10;
+    var elevator = new window.Elevator(FLOORS);
+    var interval;
+    var gotoFloor;
+    var animating = false;
 
-    elevator.step(); // Go to floor 7
-    elevator.step(); // Go to floor 8
+    function redraw () {
+        console.log("interval", interval);
+        var elevatorElement = document.getElementById("elevator");
+        var currentStyle = window.getComputedStyle(elevatorElement, null);
+        var floorsToGo = elevator.destinationFloor ? elevator.destinationFloor.floor - elevator.currentFloor : gotoFloor - elevator.currentFloor;
+        var direction = floorsToGo === 0 ? 0 : floorsToGo / Math.abs(floorsToGo);
+        var newBottom = parseInt(currentStyle.bottom) + (5 * direction);
+        elevatorElement.style.bottom = (newBottom) + "px";
+        if (newBottom % FLOOR_HEIGHT === 0) {
+            console.log("/// Elevator state ////", elevator);
+            elevator.step();
+            if (elevator.elevatorOpen) {
+                elevatorElement.style.backgroundColor = "green";
+                clearAnimation();
+                setTimeout(function() {
+                    elevatorElement.style.backgroundColor = "red";
+                    if (elevator.destinationFloor !== undefined) {
+                        animate();
+                    }
+                }, 3000);
+            }
+        }
+        var currentFloorElement = document.getElementById("current-floor");
+        var directionElement = document.getElementById("direction");
+        currentFloorElement.textContent = elevator.currentFloor;
+        directionElement.textContent = elevator.direction;
+    }
 
-    elevator.step(); // Go to floor 9
-    elevator.step(); // Go to floor 10
+    function clearAnimation() {
+        clearInterval(interval);
+        animating = false
+    }
+
+    function animate() {
+        if (!animating) {
+            interval = setInterval(redraw, REFRESH_RATE);
+            animating = true;
+        }
+    }
+
+    window.addEventListener("load", function load(e) {
+        window.removeEventListener("load", load, false);
+        var building = document.getElementById("container");
+        // Create floors
+        for(var i = 0; i < FLOORS; i++) {
+            var childDiv = document.createElement("div");
+            var upArrow = document.createElement("img");
+            upArrow.src = "up.png";
+            upArrow.classList.add("btn-img");
+            upArrow.classList.add("up-img");
+            upArrow.elevatorFloor = FLOORS - i;
+            upArrow.addEventListener("click", function () {
+                var requestedStop = { floor: this.elevatorFloor, direction: 1};
+                console.log("requested stop", requestedStop, this);
+                elevator.requestStopAt(requestedStop);
+                animate();
+            });
+            childDiv.appendChild(upArrow);
+            var downArrow = document.createElement("img");
+            downArrow.src = "down.png";
+            downArrow.classList.add("btn-img");
+            downArrow.classList.add("down-img");
+            upArrow.addEventListener("click", function () {
+                var requestedStop = { floor: this.elevatorFloor, direction: -1};
+                console.log("requested stop", requestedStop, this);
+                elevator.requestStopAt(requestedStop);
+                animate();
+            });
+            childDiv.appendChild(downArrow);
+            childDiv.classList.add("floor");
+            childDiv.style.top = (20 + FLOOR_HEIGHT * i) + "px";
+            childDiv.style.height = FLOOR_HEIGHT + "px";
+            building.appendChild(childDiv);
+        }
+
+
+        var gotoMenu = document.getElementById("goto");
+        var stopMenu = document.getElementById("stop");
+        var currentFloorElement = document.getElementById("current-floor");
+        var directionElement = document.getElementById("direction");
+        currentFloorElement.textContent = elevator.currentFloor;
+        directionElement.textContent = elevator.direction;
+        gotoMenu.addEventListener("click", function(e) {
+            gotoFloor = prompt("What would you like to go to?");
+            elevator.goTo(parseInt(gotoFloor));
+            animate();
+        });
+
+        stopMenu.addEventListener("click", function(e) {
+            clearAnimation();
+        });
+    });
 </script>
 
 </body>

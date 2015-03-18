@@ -53,6 +53,11 @@
                 return  requested;
             },
 
+            setDirection = function () {
+                var floorsToGo = this.destinationFloor.floor - this.currentFloor;
+                this.direction = floorsToGo / Math.abs(floorsToGo);
+            },
+
             step = function() {
                 // Check if I need to move
                 if (this.queue.length > 0  || this.destinationFloor) {
@@ -60,16 +65,21 @@
                     this.destinationFloor = this.destinationFloor || getNextStop.call(this);
 
                     if (this.destinationFloor !== undefined) {
-                        var floorsToGo = this.destinationFloor.floor - this.currentFloor;
-                        var direction = this.direction = floorsToGo / Math.abs(floorsToGo);
+                        if (this.destinationFloor.floor === this.currentFloor) {
+                            this.elevatorOpen = true;
+                            this.destinationFloor = undefined;
+                            return;
+                        }
+                        setDirection.call(this);
                         this.currentFloor += this.direction;
                         var curFloor = this.currentFloor;
+                        var direction = this.direction;
                         if (inQueue.call(this, curFloor, direction)) {
                             // Open door
                             this.elevatorOpen = true;
                             // Clear stop
                             this.queue = this.queue.filter(function (requestObject) {
-                                return !(requestObject.floor === curFloor && requestObject.direction === direction)
+                                return !(requestObject.floor === curFloor && (requestObject.direction === undefined || requestObject.direction === direction))
                             })
 
                         } else if (this.destinationFloor.floor === curFloor) {
@@ -79,6 +89,8 @@
                             this.elevatorOpen = false;
                         }
                     }
+                } else {
+                    this.elevatorOpen = false;
                 }
             };
 
